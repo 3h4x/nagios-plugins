@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Nagios check_smtp give performance data only when state is OK or WARNING
+# when state is critical it doesn't give any data
+
+NAGIOS_PLUGINS_PATH=/usr/lib/nagios/plugins
+check_smtp=`$NAGIOS_PLUGINS_PATH/check_smtp $@`
+exit_code=$?
+
+if [ "$check_smtp" == "CRITICAL - Socket timeout after 10 seconds" ]; then
+        echo "$check_smtp|time=0s;;;0.000000 down=1"
+        exit 2
+else
+        echo "$check_smtp down=0"
+        exit $exit_code
+fi
